@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+/* ---------- Design tokens ----------
+   60 / 30 / 10 colour system. Change the whole look of the product here.
+
+   60%  canvas  #F8FAFC  soft slate-white page background
+        surface #FFFFFF  cards
+   30%  brand   #0F172A  slate dark navy: text, sidebar (brand-900)
+   10%  gold    #C5A880  muted metallic gold: primary actions (gold-500)
+        alert   #B91C1C  deep crimson: critical deadline warnings and errors (alert-700) */
+@theme {
+  --color-brand-50: #f8fafc;
+  --color-brand-100: #f1f5f9;
+  --color-brand-200: #e2e8f0;
+  --color-brand-300: #cbd5e1;
+  --color-brand-400: #94a3b8;
+  --color-brand-500: #64748b;
+  --color-brand-600: #475569;
+  --color-brand-700: #334155;
+  --color-brand-800: #1e293b;
+  --color-brand-900: #0f172a;
+  --color-brand-950: #0b1220;
+
+  --color-gold-50: #faf6ef;
+  --color-gold-100: #f4ecdf;
+  --color-gold-200: #eaddc7;
+  --color-gold-300: #decbab;
+  --color-gold-400: #d2b994;
+  --color-gold-500: #c5a880;
+  --color-gold-600: #a98b5e;
+  --color-gold-700: #8a6f47;
+  --color-gold-800: #6b5636;
+
+  --color-alert-50: #fef2f2;
+  --color-alert-100: #fee2e2;
+  --color-alert-200: #fecaca;
+  --color-alert-700: #b91c1c;
+  --color-alert-800: #991b1b;
+
+  --color-canvas: #f8fafc;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-playfair), Georgia, "Times New Roman", serif;
+}
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-gold-200);
+  color: var(--color-brand-900);
+}
+
+/* subtle row highlight in every table */
+table tbody tr {
+  transition: background-color 120ms ease;
+}
+table tbody tr:hover {
+  background-color: color-mix(in srgb, var(--color-gold-100) 45%, transparent);
+}
+
+/* nicer keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--color-gold-600);
+  outline-offset: 2px;
+}
+
+/* printable invoices: no app chrome, no background */
+@media print {
+  body {
+    background: #fff;
+  }
+  @page {
+    margin: 16mm;
+  }
+}
+
+/* =====================================================================
+   Responsive / mobile-app behaviour
+   ===================================================================== */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+a, button, summary, label {
+  touch-action: manipulation; /* no double-tap zoom delay on buttons */
+}
+
+@keyframes sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* hide the scrollbar on horizontally scrolling tab strips, keep them swipeable */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  /* 16px stops iOS Safari from zooming the page when a field is focused */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Tables become a list of cards. Cell labels come from <TableLabels /> (data-label). */
+  main table:not(.no-stack),
+  main table:not(.no-stack) tbody {
+    display: block;
+    width: 100%;
+  }
+  main table:not(.no-stack) thead {
+    display: none;
+  }
+  main table:not(.no-stack) tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem 1rem;
+    padding: 1rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  main table:not(.no-stack) tbody tr:first-child {
+    border-top: 0;
+  }
+  main table:not(.no-stack) td {
+    display: block;
+    padding: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  main table:not(.no-stack) td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #94a3b8;
+  }
+  /* first cell = the card title, last cell without a heading = the actions row */
+  main table:not(.no-stack) td:first-child {
+    grid-column: 1 / -1;
+  }
+  main table:not(.no-stack) td:first-child::before,
+  main table:not(.no-stack) td[data-label=""]::before {
+    display: none;
+  }
+  main table:not(.no-stack) td[data-label=""] {
+    grid-column: 1 / -1;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 0.65rem;
+  }
+}
